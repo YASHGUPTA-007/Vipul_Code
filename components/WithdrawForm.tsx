@@ -6,10 +6,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 
-export default function WithdrawForm({ campaignAddress, withdraw }) {
-  const [amount, setAmount] = useState('')
+interface WithdrawFormProps {
+  campaignAddress: string;
+  withdraw: (campaignAddress: string, amount: number) => void;
+}
 
-  const handleSubmit = (e) => {
+export default function WithdrawForm({ campaignAddress, withdraw }: WithdrawFormProps) {
+  const [amount, setAmount] = useState<string>('')
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const withdrawAmount = parseFloat(amount)
     if (!isNaN(withdrawAmount) && withdrawAmount > 0) {
@@ -49,4 +54,3 @@ export default function WithdrawForm({ campaignAddress, withdraw }) {
     </Card>
   )
 }
-

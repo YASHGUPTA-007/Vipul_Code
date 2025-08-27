@@ -7,16 +7,31 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 
-export default function CreateCampaign({ createCampaign }) {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [targetAmount, setTargetAmount] = useState('')
-  const [projectUrl, setProjectUrl] = useState('')
-  const [progressUpdateUrl, setProgressUpdateUrl] = useState('')
-  const [projectImageUrl, setProjectImageUrl] = useState('')
-  const [category, setCategory] = useState('')
+// Define the campaign data structure that gets passed to createCampaign
+interface CampaignFormData {
+  name: string;
+  description: string;
+  targetAmount: number;
+  projectUrl: string;
+  progressUpdateUrl: string;
+  projectImageUrl: string;
+  category: string;
+}
 
-  const handleSubmit = (e) => {
+interface CreateCampaignProps {
+  createCampaign: (campaignData: CampaignFormData) => Promise<void>;
+}
+
+export default function CreateCampaign({ createCampaign }: CreateCampaignProps) {
+  const [name, setName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [targetAmount, setTargetAmount] = useState<string>('')
+  const [projectUrl, setProjectUrl] = useState<string>('')
+  const [progressUpdateUrl, setProgressUpdateUrl] = useState<string>('')
+  const [projectImageUrl, setProjectImageUrl] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     createCampaign({
       name,
@@ -138,4 +153,3 @@ export default function CreateCampaign({ createCampaign }) {
     </Card>
   )
 }
-

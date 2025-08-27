@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js'
+import { Connection, PublicKey, clusterApiUrl, Commitment } from '@solana/web3.js'
 import { Program, AnchorProvider, web3, utils, BN } from '@project-serum/anchor'
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,17 +11,31 @@ import CampaignDetails from '@/components/CampaignDetails'
 import WithdrawForm from '@/components/WithdrawForm'
 import SolanaLogo from '@/components/SolanaLogo'
 
+// Define the structure for our processed campaign data
+interface CampaignData {
+  pubkey: PublicKey;
+  admin: PublicKey;
+  name: string;
+  description: string;
+  amountDonated: BN;
+  targetAmount: BN;
+  projectUrl: string;
+  progressUpdateUrl: string;
+  projectImageUrl: string;
+  category: string;
+}
+
 const { SystemProgram } = web3
 
 const programID = new PublicKey(idl.metadata.address)
 const network = clusterApiUrl('devnet')
 const opts = {
-  preflightCommitment: 'processed'
+  preflightCommitment: 'processed' as Commitment
 }
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
-  const [campaigns, setCampaigns] = useState<any[]>([])
+  const [campaigns, setCampaigns] = useState<CampaignData[]>([])
   const [userPublicKey, setUserPublicKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -152,7 +166,7 @@ export default function Home() {
       console.log("Fetched campaigns:", campaigns);
 
       setCampaigns(
-          campaigns.map((campaign) => ({
+          campaigns.map((campaign: any): CampaignData => ({
             pubkey: campaign.publicKey,
             admin: campaign.account.admin,
             name: campaign.account.name,
@@ -219,8 +233,7 @@ export default function Home() {
             <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-gray-900">
               Solana campaigning
             </h1>
-            <p className="
-text-sm sm:text-lg text-gray-600 max-w-md mx-auto">
+            <p className="text-sm sm:text-lg text-gray-600 max-w-md mx-auto">
               Connect your Phantom wallet to create and support campaigns on the Solana blockchain
             </p>
             <Button
@@ -260,7 +273,7 @@ text-sm sm:text-lg text-gray-600 max-w-md mx-auto">
                   <div key={campaign.pubkey.toString()} className="space-y-4 sm:space-y-6">
                     <CampaignDetails campaign={campaign} donate={donateToCampaign} />
                     {userPublicKey && campaign.admin.toString() === userPublicKey && (
-                        <WithdrawForm campaignAddress={campaign.pubkey} withdraw={withdrawFromCampaign} />
+                        <WithdrawForm campaignAddress={campaign.pubkey.toString()} withdraw={withdrawFromCampaign} />
                     )}
                   </div>
               ))}
@@ -270,4 +283,3 @@ text-sm sm:text-lg text-gray-600 max-w-md mx-auto">
       </div>
   )
 }
-

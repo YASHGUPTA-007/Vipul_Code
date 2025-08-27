@@ -3,9 +3,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ExternalLink } from 'lucide-react'
+import { PublicKey } from '@solana/web3.js'
+import { BN } from '@project-serum/anchor'
 import DonateForm from './DonateForm'
 
-export default function CampaignDetails({ campaign, donate }) {
+// Define the campaign type to match what we're passing from the main component
+interface CampaignData {
+  pubkey: PublicKey;
+  admin: PublicKey;
+  name: string;
+  description: string;
+  amountDonated: BN;
+  targetAmount: BN;
+  projectUrl: string;
+  progressUpdateUrl: string;
+  projectImageUrl: string;
+  category: string;
+}
+
+interface CampaignDetailsProps {
+  campaign: CampaignData;
+  donate: (publicKey: string, amount: number) => Promise<void>;
+}
+
+export default function CampaignDetails({ campaign, donate }: CampaignDetailsProps) {
   const amountDonated = campaign.amountDonated?.toNumber() || 0
   const targetAmount = campaign.targetAmount?.toNumber() || 1
   const progress = (amountDonated / targetAmount) * 100
@@ -60,10 +81,9 @@ export default function CampaignDetails({ campaign, donate }) {
         </div>
 
         <div className="mt-4 sm:mt-6">
-          <DonateForm campaignAddress={campaign.pubkey} donate={donate} />
+          <DonateForm campaignAddress={campaign.pubkey.toString()} donate={donate} />
         </div>
       </CardContent>
     </Card>
   )
 }
-

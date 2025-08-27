@@ -6,10 +6,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 
-export default function DonateForm({ campaignAddress, donate }) {
-  const [amount, setAmount] = useState('')
+interface DonateFormProps {
+  campaignAddress: string;
+  donate: (campaignAddress: string, amount: number) => void;
+}
 
-  const handleSubmit = (e) => {
+export default function DonateForm({ campaignAddress, donate }: DonateFormProps) {
+  const [amount, setAmount] = useState<string>('')
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const donationAmount = parseFloat(amount)
     if (!isNaN(donationAmount) && donationAmount > 0) {
@@ -49,4 +54,3 @@ export default function DonateForm({ campaignAddress, donate }) {
     </Card>
   )
 }
-
